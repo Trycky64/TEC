@@ -1,0 +1,13 @@
+{
+  "itemGroup.tec": "Example Mod Tab",
+  "block.tec.example_block": "Example Block",
+  "item.tec.example_item": "Example Item",
+
+  "tec.configuration.title": "Trycky's Enchantment Cracker Configs",
+  "tec.configuration.section.tec.common.toml": "Trycky's Enchantment Cracker Configs",
+  "tec.configuration.section.tec.common.toml.title": "Trycky's Enchantment Cracker Configs",
+  "tec.configuration.items": "Item List",
+  "tec.configuration.logDirtBlock": "Log Dirt Block",
+  "tec.configuration.magicNumberIntroduction": "Magic Number Text",
+  "tec.configuration.magicNumber": "Magic Number"
+}
