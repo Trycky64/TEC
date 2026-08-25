@@ -39,11 +39,22 @@ neoForge {
 }
 
 repositories {
-    // Additional repositories required by the cracking libraries will be added later.
+    mavenCentral()
 }
 
 dependencies {
-    // Cracking dependencies will be added in the next implementation steps.
+    // ClientCommands uses mc_seed for Java's 48-bit LCG/Rand simulation.
+    // Bundle it so TEC remains a standalone client mod.
+    jarJar(implementation("com.seedfinding:mc_seed:${seedfinding_seed_version}")) {
+        version {
+            strictly "[${seedfinding_seed_version}]"
+            prefer seedfinding_seed_version
+        }
+    }
+
+    // NeoForge <= 1.21.8 does not automatically expose plain Java libraries
+    // to development runs, so keep the same library on the runtime classpath.
+    additionalRuntimeClasspath "com.seedfinding:mc_seed:${seedfinding_seed_version}"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {
