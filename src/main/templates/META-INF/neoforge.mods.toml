@@ -27,3 +27,6 @@ type="required"
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="CLIENT"
+
+[[mixins]]
+config="tec.mixins.json"

@@ -58,6 +58,7 @@ public final class EnchantmentCracker {
 
     private static CrackState crackState = CrackState.UNCRACKED;
     private static @Nullable BlockPos enchantingTablePos;
+    private static int firstXpSeed;
 
     private EnchantmentCracker() {
     }
@@ -66,6 +67,7 @@ public final class EnchantmentCracker {
         crackState = CrackState.UNCRACKED;
         POSSIBLE_XP_SEEDS.clear();
         enchantingTablePos = null;
+        firstXpSeed = 0;
     }
 
     public static CrackState getCrackState() {
@@ -158,7 +160,77 @@ public final class EnchantmentCracker {
             LOGGER.warn("Invalid enchantment seed information; resetting the enchantment cracker.");
         } else if (POSSIBLE_XP_SEEDS.size() == 1) {
             crackState = CrackState.CRACKED;
-            LOGGER.info("Enchantment seed cracked: {}", String.format("%08X", POSSIBLE_XP_SEEDS.iterator().next()));
+            int crackedXpSeed = POSSIBLE_XP_SEEDS.iterator().next();
+            LOGGER.info("Enchantment seed cracked: {}", String.format("%08X", crackedXpSeed));
+            addPlayerRngInfo(crackedXpSeed);
+        }
+    }
+
+    /**
+     * Uses two consecutive fully cracked XP seeds to recover the 48-bit Player
+     * RNG state. This is the same lattice-derived reconstruction used by
+     * ClientCommands, fixed to the Java RNG used by Minecraft 1.21.1.
+     */
+    private static void addPlayerRngInfo(int enchantmentSeed) {
+        PlayerRandCracker.CrackState playerState = PlayerRandCracker.getCrackState();
+
+        if (playerState == PlayerRandCracker.CrackState.ENCH_CRACKING_1) {
+            firstXpSeed = enchantmentSeed;
+            PlayerRandCracker.setCrackState(PlayerRandCracker.CrackState.HALF_CRACKED);
+            return;
+        }
+
+        if (playerState != PlayerRandCracker.CrackState.ENCH_CRACKING_2) {
+            return;
+        }
+
+        long max1 = Integer.toUnsignedLong(firstXpSeed) + 1;
+        long min1 = Integer.toUnsignedLong(firstXpSeed);
+        long max2 = Integer.toUnsignedLong(enchantmentSeed) + 1;
+        long a = (24667315L * max1 + 18218081L * max2) >> 32;
+        long b = (-4824621L * min1 + 7847617L * max2) >> 32;
+
+        long playerSeed = (7847617L * a - 18218081L * b) & PlayerRandCracker.MASK;
+        boolean valid = (int) (playerSeed >>> 16) == firstXpSeed;
+
+        playerSeed = (playerSeed * PlayerRandCracker.MULTIPLIER + PlayerRandCracker.ADDEND)
+                & PlayerRandCracker.MASK;
+        valid &= (int) (playerSeed >>> 16) == enchantmentSeed;
+
+        if (valid) {
+            PlayerRandCracker.markCracked(playerSeed);
+        } else {
+            PlayerRandCracker.resetCracker("invalidEnchantSequence");
+            LOGGER.warn("Invalid player RNG information; the observed enchantment sequence was desynchronised.");
+        }
+    }
+
+    /**
+     * Must be called after the server accepts an enchantment. The table hook is
+     * added in step 5; keeping the state transition here lets the RNG tracker
+     * remain self-contained and testable now.
+     */
+    public static void onEnchantedItem() {
+        PlayerRandCracker.CrackState playerState = PlayerRandCracker.getCrackState();
+
+        if (playerState.knowsSeed()) {
+            POSSIBLE_XP_SEEDS.clear();
+            POSSIBLE_XP_SEEDS.add(PlayerRandCracker.nextInt());
+            PlayerRandCracker.setCrackState(PlayerRandCracker.CrackState.CRACKED);
+            crackState = CrackState.CRACKED;
+        } else if (playerState == PlayerRandCracker.CrackState.HALF_CRACKED) {
+            POSSIBLE_XP_SEEDS.clear();
+            PlayerRandCracker.setCrackState(PlayerRandCracker.CrackState.ENCH_CRACKING_2);
+            crackState = CrackState.UNCRACKED;
+        } else if (playerState == PlayerRandCracker.CrackState.UNCRACKED
+                || playerState == PlayerRandCracker.CrackState.ENCH_CRACKING_1
+                || playerState == PlayerRandCracker.CrackState.ENCH_CRACKING_2) {
+            POSSIBLE_XP_SEEDS.clear();
+            PlayerRandCracker.setCrackState(PlayerRandCracker.CrackState.ENCH_CRACKING_1);
+            crackState = CrackState.UNCRACKED;
+        } else {
+            PlayerRandCracker.onUnexpectedItemEnchant();
+            crackState = CrackState.UNCRACKED;
         }
     }
 
