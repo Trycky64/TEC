@@ -29,5 +29,14 @@
   "enchCrack.table.unknown": "Position de la table d'enchantement : inconnue",
   "enchCrack.enchantments": "Enchantements prédits :",
   "enchCrack.clues": "Indices du serveur :",
-  "enchCrack.slot": "Slot %s :"
+  "enchCrack.slot": "Slot %s :",
+  "commands.teccrackrng.already_running": "Le cracking du RNG joueur est déjà en cours.",
+  "commands.teccrackrng.starting": "Cracking du RNG joueur (tentative %s/%s). Reste immobile pendant que TEC jette 10 objets.",
+  "commands.teccrackrng.retry": "Résultat RNG ambigu. Nouvelle tentative (%s/%s)...",
+  "commands.teccrackrng.success": "RNG joueur cracké : %s",
+  "commands.teccrackrng.failed": "Impossible de cracker le RNG joueur.",
+  "commands.teccrackrng.failed.items": "Pas assez d’objets jetables. TEC a besoin d’au moins 10 objets par tentative.",
+  "commands.teccrackrng.failed.timeout": "Délai dépassé en attendant le packet d’un objet jeté.",
+  "commands.teccrackrng.failed.left_world": "Le cracking RNG a été arrêté car le monde/joueur n’est plus disponible.",
+  "playerManip.state.cracking": "cracking en cours"
 }

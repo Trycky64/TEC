@@ -31,17 +31,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-/** Client-side /cenchant command. */
+/** Client-side /tecenchant command. */
 public final class CEnchantCommand {
     private CEnchantCommand() {
     }
 
     public static void register(RegisterClientCommandsEvent event) {
         register(event.getDispatcher(), event.getBuildContext());
+        TECCrackRngCommand.register(event.getDispatcher());
     }
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext context) {
-        dispatcher.register(Commands.literal("cenchant")
+        dispatcher.register(Commands.literal("tecenchant")
                 .then(Commands.argument(
                                 "itemAndEnchantmentsPredicate",
                                 ItemAndEnchantmentsPredicateArgument.itemAndEnchantmentsPredicate(context)

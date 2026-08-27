@@ -29,5 +29,14 @@
   "enchCrack.table.unknown": "Enchanting table position: unknown",
   "enchCrack.enchantments": "Predicted enchantments:",
   "enchCrack.clues": "Server clues:",
-  "enchCrack.slot": "Slot %s:"
+  "enchCrack.slot": "Slot %s:",
+  "commands.teccrackrng.already_running": "Player RNG cracking is already running.",
+  "commands.teccrackrng.starting": "Cracking player RNG (attempt %s/%s). Keep still while TEC drops 10 items.",
+  "commands.teccrackrng.retry": "RNG result was ambiguous. Retrying (%s/%s)...",
+  "commands.teccrackrng.success": "Player RNG cracked: %s",
+  "commands.teccrackrng.failed": "Unable to crack the player RNG.",
+  "commands.teccrackrng.failed.items": "Not enough droppable items. TEC needs at least 10 items per attempt.",
+  "commands.teccrackrng.failed.timeout": "Timed out waiting for a dropped-item packet.",
+  "commands.teccrackrng.failed.left_world": "RNG cracking stopped because the world/player is no longer available.",
+  "playerManip.state.cracking": "cracking"
 }

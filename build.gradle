@@ -40,6 +40,7 @@ neoForge {
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://maven.latticg.com") }
 }
 
 dependencies {
@@ -55,6 +56,15 @@ dependencies {
     // NeoForge <= 1.21.8 does not automatically expose plain Java libraries
     // to development runs, so keep the same library on the runtime classpath.
     additionalRuntimeClasspath "com.seedfinding:mc_seed:${seedfinding_seed_version}"
+
+    // Runtime half of LattiCG used by the generated /teccrackrng seed solver.
+    jarJar(implementation("com.seedfinding:latticg:${latticg_version}:rt")) {
+        version {
+            strictly "[${latticg_version}]"
+            prefer latticg_version
+        }
+    }
+    additionalRuntimeClasspath "com.seedfinding:latticg:${latticg_version}:rt"
 }
 
 var generateModMetadata = tasks.register("generateModMetadata", ProcessResources) {

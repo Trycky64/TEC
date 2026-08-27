@@ -5,7 +5,11 @@
 package com.trycky.tec.feature;
 
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.slf4j.Logger;
@@ -101,6 +105,34 @@ public final class PlayerRandCracker {
         resetCracker();
     }
 
+
+    /**
+     * Throws one ordinary inventory item for /teccrackrng. The existing LocalPlayer
+     * drop hook marks this throw as expected so it cannot invalidate the cracker.
+     */
+    public static boolean throwItemForCracking() {
+        Minecraft mc = Minecraft.getInstance();
+        LocalPlayer player = mc.player;
+        if (player == null || mc.gameMode == null) {
+            return false;
+        }
+
+        Slot slot = player.containerMenu.slots.stream()
+                .filter(Slot::hasItem)
+                .filter(candidate -> !candidate.getItem().is(Items.CHORUS_FRUIT))
+                .max(java.util.Comparator.comparingInt(candidate -> candidate.getItem().getCount()))
+                .orElse(null);
+        if (slot == null) {
+            return false;
+        }
+
+        expectItemThrow();
+        mc.gameMode.handleInventoryMouseClick(
+                player.containerMenu.containerId, slot.index, 0, ClickType.THROW, player
+        );
+        return true;
+    }
+
     /** A normal dropped item consumes four calls to Player.random. */
     public static void onDropItem() {
         if (expectedThrows > 0 || knowsSeed()) {
@@ -178,6 +210,7 @@ public final class PlayerRandCracker {
 
     public enum CrackState implements StringRepresentable {
         UNCRACKED("uncracked"),
+        CRACKING("cracking"),
         CRACKED("cracked", true),
         ENCH_CRACKING_1("ench_cracking_1"),
         HALF_CRACKED("half_cracked"),

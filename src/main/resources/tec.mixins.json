@@ -6,6 +6,8 @@
   "client": [
     "commands.enchant.MultiPlayerGameModeMixin",
     "commands.enchant.EnchantmentScreenMixin",
+    "commands.rng.CCrackRngTickMixin",
+    "commands.rng.CCrackRngPacketMixin",
     "rngevents.AnvilMenuMixin",
     "rngevents.ClientPacketListenerMixin",
     "rngevents.EntityMixin",
