@@ -1,5 +1,7 @@
 package com.trycky.tec.mixin.rngevents;
 
+import com.trycky.tec.feature.CCrackRng;
+import com.trycky.tec.feature.EnchantmentCracker;
 import com.trycky.tec.feature.PlayerRandCracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ReceivingLevelScreen;
@@ -18,6 +20,8 @@ public abstract class MinecraftMixin {
             ReceivingLevelScreen.Reason reason,
             CallbackInfo ci
     ) {
-        PlayerRandCracker.resetCracker();
+        CCrackRng.onWorldChanged();
+        EnchantmentCracker.reset();
+        PlayerRandCracker.onWorldChanged();
     }
 }

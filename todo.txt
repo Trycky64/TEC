@@ -27,12 +27,12 @@ TODO — Trycky's Enchantment Cracker v1.0.0
 - Afficher les prédictions nécessaires.
 - Brancher le système de cracking/manipulation à l'écran d'enchantement.
 
-[] 6. Tests et stabilisation v1.0.0
-- Tester en solo.
-- Tester sur serveur vanilla/NeoForge sans mod serveur.
-- Tester plusieurs outils, armures et livres.
-- Tester /teccrackrng et la transition Player RNG -> cracked.
-- Vérifier que /tecenchant remplace définitivement /cenchant.
-- Vérifier reconnexion, changement de monde et resynchronisation RNG.
-- Corriger les crashes, faux positifs et désynchronisations.
-- Build final de Trycky's Enchantment Cracker 1.0.0.
+[ ] 6. Tests et stabilisation v1.0.0
+- [x] Tester en solo.
+- [ ] Tester sur serveur vanilla/NeoForge sans mod serveur.
+- [ ] Tester plusieurs outils, armures et livres.
+- [x] Tester /teccrackrng et la transition Player RNG -> cracked.
+- [x] Vérifier que /tecenchant remplace définitivement /cenchant.
+- [ ] Vérifier reconnexion, changement de monde et resynchronisation RNG.
+- [ ] Corriger les crashes, faux positifs et désynchronisations.
+- [ ] Build final de Trycky's Enchantment Cracker 1.0.0.

@@ -112,6 +112,12 @@ public final class CCrackRng {
             return;
         }
 
+        // Never consume an unrelated nearby item spawn unless TEC currently has
+        // one deliberately thrown item whose spawn packet is still outstanding.
+        if (receivedThrows >= sentThrows) {
+            return;
+        }
+
         LocalPlayer player = Minecraft.getInstance().player;
         if (player == null) {
             return;
@@ -126,6 +132,19 @@ public final class CCrackRng {
                 packet.getXa() * packet.getXa() + packet.getZa() * packet.getZa()
         ) * 50.0F;
         nextFloats[receivedThrows++] = horizontalVelocity;
+        waitTicks = 0;
+    }
+
+    /**
+     * Cancels an in-progress crack when the client changes/loses its world.
+     * Static state must never leak into the next connection.
+     */
+    public static void onWorldChanged() {
+        active = false;
+        solving = false;
+        attemptCount = 0;
+        sentThrows = 0;
+        receivedThrows = 0;
         waitTicks = 0;
     }
 

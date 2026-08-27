@@ -1,0 +1,56 @@
+TEC v1.0.0 — VALIDATION MANUELLE
+=================================
+
+Ne cocher l'étape 6 du todo.txt qu'après validation de tous les cas ci-dessous.
+
+1. Solo
+-------
+[ ] /teccrackrng atteint "Player RNG cracked".
+[ ] Crack de la seed d'enchantement via la table.
+[ ] /tecenchant trouve un plan.
+[ ] Le plan donne réellement les enchantements annoncés.
+
+2. Types d'objets
+-----------------
+[ ] Épée (ex. Sharpness/Looting).
+[ ] Pioche (ex. Efficiency/Unbreaking/Fortune).
+[ ] Armure (casque ou plastron).
+[ ] Livre.
+
+3. Noms de commandes
+--------------------
+[ ] /tecenchant existe.
+[ ] /teccrackrng existe.
+[ ] /cenchant est inconnu.
+[ ] /ccrackrng est inconnu.
+
+4. Reconnexion / changement de monde
+------------------------------------
+[ ] Crack RNG puis quitter/rejoindre : Player RNG doit redevenir uncracked.
+[ ] Crack enchantment seed puis quitter/rejoindre : Enchantment seed doit redevenir uncracked.
+[ ] Changer de dimension : aucun ancien seed ne doit être réutilisé.
+[ ] Lancer /teccrackrng puis quitter pendant les drops : aucune tâche ne doit continuer au retour.
+
+5. Invalidations RNG
+--------------------
+Après /teccrackrng :
+[ ] Sprint invalide l'état.
+[ ] Dégâts invalident l'état.
+[ ] XP/Mending invalident l'état lorsque prévu.
+[ ] Refaire /teccrackrng après invalidation fonctionne.
+[ ] Aucun faux état "cracked" ne subsiste après une action invalidante.
+
+6. Serveur sans TEC
+-------------------
+[ ] Serveur vanilla 1.21.1 : connexion sans TEC serveur.
+[ ] /teccrackrng fonctionne.
+[ ] Table d'enchantement / overlay fonctionne.
+[ ] /tecenchant trouve un résultat et la manipulation est correcte.
+[ ] Serveur NeoForge 1.21.1 sans TEC : mêmes vérifications.
+
+7. Final
+--------
+[ ] .\gradlew clean build
+[ ] .\gradlew runClient sans erreur TEC/Mixin.
+[ ] JAR présent dans build\libs\.
+[ ] Aucune régression connue bloquante.
