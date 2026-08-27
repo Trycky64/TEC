@@ -4,6 +4,8 @@
   "package": "com.trycky.tec.mixin",
   "compatibilityLevel": "JAVA_21",
   "client": [
+    "commands.enchant.MultiPlayerGameModeMixin",
+    "commands.enchant.EnchantmentScreenMixin",
     "rngevents.AnvilMenuMixin",
     "rngevents.ClientPacketListenerMixin",
     "rngevents.EntityMixin",

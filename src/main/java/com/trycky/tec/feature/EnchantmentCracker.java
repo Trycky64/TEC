@@ -13,7 +13,9 @@ import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
@@ -65,6 +67,75 @@ public final class EnchantmentCracker {
     private static int firstXpSeed;
 
     private EnchantmentCracker() {
+    }
+
+
+    /**
+     * Renders the enchanting-screen status/prediction overlay.
+     * The overlay deliberately uses only client state and can therefore be used
+     * on vanilla servers without server-side TEC installation.
+     */
+    public static void drawEnchantmentGuiOverlay(GuiGraphics graphics) {
+        Minecraft minecraft = Minecraft.getInstance();
+        LocalPlayer player = minecraft.player;
+        Level level = minecraft.level;
+        if (player == null || level == null || !(player.containerMenu instanceof EnchantmentMenu)) {
+            return;
+        }
+
+        List<Component> lines = new ArrayList<>();
+        lines.add(Component.translatable(
+                "enchCrack.state",
+                Component.translatable("enchCrack.state." + crackState.getSerializedName())
+        ));
+        lines.add(Component.translatable(
+                "playerManip.state",
+                Component.translatable("playerManip.state." + PlayerRandCracker.getCrackState().getSerializedName())
+        ));
+        lines.add(Component.empty());
+
+        if (crackState == CrackState.CRACKED && !POSSIBLE_XP_SEEDS.isEmpty()) {
+            lines.add(Component.translatable(
+                    "enchCrack.xpSeed.one",
+                    String.format("%08X", POSSIBLE_XP_SEEDS.iterator().next())
+            ));
+        } else if (crackState == CrackState.CRACKING) {
+            lines.add(Component.translatable("enchCrack.xpSeed.many", POSSIBLE_XP_SEEDS.size()));
+        }
+
+        BlockPos tablePos = enchantingTablePos;
+        if (tablePos != null) {
+            lines.add(Component.translatable("enchCrack.bookshelfCount", getEnchantPower(level, tablePos)));
+        } else {
+            lines.add(Component.translatable("enchCrack.table.unknown"));
+        }
+        lines.add(Component.empty());
+
+        lines.add(Component.translatable(
+                crackState == CrackState.CRACKED ? "enchCrack.enchantments" : "enchCrack.clues"
+        ));
+
+        Registry<Enchantment> enchantmentRegistry = player.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        for (int slot = 0; slot < 3; slot++) {
+            lines.add(Component.translatable("enchCrack.slot", slot + 1));
+            List<EnchantmentInstance> enchantments = getEnchantmentsInTable(slot);
+            if (enchantments == null) {
+                continue;
+            }
+
+            sortIntoTooltipOrder(enchantmentRegistry, enchantments);
+            for (EnchantmentInstance enchantment : enchantments) {
+                lines.add(Component.literal("   ").append(
+                        Enchantment.getFullname(enchantment.enchantment, enchantment.level)
+                ));
+            }
+        }
+
+        int y = 4;
+        for (Component line : lines) {
+            graphics.drawString(minecraft.font, line, 4, y, 0xFFFFFF, false);
+            y += minecraft.font.lineHeight;
+        }
     }
 
     public static void reset() {

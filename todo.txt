@@ -7,22 +7,22 @@ TODO — Trycky's Enchantment Cracker v1.0.0
 - Vérifier que le projet démarre correctement en NeoForge 1.21.1.
 
 [x] 2. Porter le cœur de l'enchantment cracking
-- [x] Porter EnchantmentCracker.
-- [x] Porter les dépendances utilitaires réellement nécessaires.
-- [x] Ajouter les bibliothèques SeedFinding/LCG requises.
-- [x] Vérifier le cracking de seed d'enchantement.
+- Porter EnchantmentCracker.
+- Porter les dépendances utilitaires réellement nécessaires.
+- Ajouter les bibliothèques SeedFinding/LCG requises.
+- Vérifier le cracking de seed d'enchantement.
 
 [x] 3. Porter le suivi du RNG joueur
-- [x] Porter la partie nécessaire de PlayerRandCracker.
-- [x] Adapter les hooks/mixins RNG à NeoForge 1.21.1.
-- [x] Éviter toute désynchronisation du RNG client/serveur.
+- Porter la partie nécessaire de PlayerRandCracker.
+- Adapter les hooks/mixins RNG à NeoForge 1.21.1.
+- Éviter toute désynchronisation du RNG client/serveur.
 
 [x] 4. Porter /cenchant
-- [x] Adapter CEnchantCommand au système de commandes client NeoForge.
-- [x] Porter les arguments nécessaires.
-- [x] Reproduire le comportement utile de la commande originale.
+- Adapter CEnchantCommand au système de commandes client NeoForge.
+- Porter les arguments nécessaires.
+- Reproduire le comportement utile de la commande originale.
 
-[ ] 5. Porter l'intégration de la table d'enchantement
+[x] 5. Porter l'intégration de la table d'enchantement
 - Récupérer les données de la table utilisée.
 - Afficher les prédictions nécessaires.
 - Brancher le système de cracking/manipulation à l'écran d'enchantement.
