@@ -1,0 +1,13 @@
+{
+  "commands.cenchant.incompatible": "Enchantements incompatibles",
+  "commands.cenchant.no_player": "Aucun joueur client n'est disponible.",
+  "commands.cenchant.uncracked": "La seed d'enchantement ou du RNG joueur doit d'abord être crackée.",
+  "commands.cenchant.searching": "Recherche d'une manipulation d'enchantement...",
+  "commands.cenchant.failed": "Ces enchantements sont impossibles à obtenir ou demanderaient trop de recherches.",
+  "commands.cenchant.success": "Manipulation d'enchantement trouvée.",
+  "enchCrack.insn.itemThrows.noDummy": "Jets d'objets : aucun (aucun enchantement factice requis)",
+  "enchCrack.insn.itemThrows": "Jets d'objets avant l'enchantement factice : %s",
+  "enchCrack.insn.bookshelves": "Bibliothèques : %s",
+  "enchCrack.insn.slot": "Emplacement de la table d'enchantement : %s",
+  "enchCrack.insn.enchantments": "Enchantements obtenus :"
+}

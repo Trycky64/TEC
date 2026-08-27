@@ -7,6 +7,8 @@
  */
 package com.trycky.tec.feature;
 
+import com.trycky.tec.util.JavaRandom48;
+
 import com.mojang.logging.LogUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -22,6 +24,7 @@ import net.minecraft.tags.EnchantmentTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.inventory.EnchantmentMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -40,6 +43,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Core enchantment-seed cracker for Minecraft 1.21.1.
@@ -372,6 +376,80 @@ public final class EnchantmentCracker {
         }
 
         list.sort(Comparator.comparingInt(enchantment -> tooltipIndex.getInt(enchantment.enchantment)));
+    }
+
+    /**
+     * Searches the same manipulation space used by ClientCommands for its default
+     * /cenchant configuration. This step only computes the plan; automatic item
+     * throwing/dummy-enchant execution is intentionally deferred.
+     */
+    public static @Nullable ManipulateResult findManipulationResult(
+            Item item,
+            Predicate<List<EnchantmentInstance>> enchantmentsPredicate
+    ) {
+        LocalPlayer player = Minecraft.getInstance().player;
+        if (player == null) {
+            return null;
+        }
+
+        Registry<Enchantment> enchantmentRegistry = player.registryAccess().registryOrThrow(Registries.ENCHANTMENT);
+        ItemStack stack = new ItemStack(item);
+        boolean playerSeedKnown = PlayerRandCracker.knowsSeed();
+        boolean enchantmentSeedKnown = crackState == CrackState.CRACKED && POSSIBLE_XP_SEEDS.size() == 1;
+
+        if (!playerSeedKnown && !enchantmentSeedKnown) {
+            return null;
+        }
+
+        int noDummyXpSeed = enchantmentSeedKnown ? POSSIBLE_XP_SEEDS.iterator().next() : 0;
+        long playerSeed = PlayerRandCracker.getSeed();
+        int firstThrowCount = enchantmentSeedKnown ? ManipulateResult.NO_DUMMY : 0;
+        int exclusiveMaxThrowCount = playerSeedKnown ? 16_384 : 0;
+
+        for (int itemThrows = firstThrowCount; itemThrows < exclusiveMaxThrowCount; itemThrows++) {
+            int xpSeed = itemThrows == ManipulateResult.NO_DUMMY
+                    ? noDummyXpSeed
+                    : JavaRandom48.nextIntAfterAdvances(playerSeed, itemThrows * 4L);
+
+            RandomSource rand = RandomSource.create();
+            int[] enchantmentLevels = new int[3];
+
+            for (int bookshelves = 0; bookshelves <= 15; bookshelves++) {
+                rand.setSeed(xpSeed);
+                for (int slot = 0; slot < 3; slot++) {
+                    int level = EnchantmentHelper.getEnchantmentCost(rand, slot, bookshelves, stack);
+                    if (level < slot + 1) {
+                        level = 0;
+                    }
+                    enchantmentLevels[slot] = level;
+                }
+
+                for (int slot = 0; slot < 3; slot++) {
+                    int level = enchantmentLevels[slot];
+                    if (level < 1 || level > 30) {
+                        continue;
+                    }
+
+                    List<EnchantmentInstance> enchantments = getEnchantmentList(
+                            enchantmentRegistry, rand, xpSeed, stack, slot, level
+                    );
+                    if (enchantmentsPredicate.test(enchantments)) {
+                        return new ManipulateResult(itemThrows, bookshelves, slot, List.copyOf(enchantments));
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public record ManipulateResult(
+            int itemThrows,
+            int bookshelves,
+            int slot,
+            List<EnchantmentInstance> enchantments
+    ) {
+        public static final int NO_DUMMY = -1;
     }
 
     private static int getEnchantPower(Level level, BlockPos tablePos) {

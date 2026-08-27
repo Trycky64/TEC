@@ -17,10 +17,10 @@ TODO — Trycky's Enchantment Cracker v1.0.0
 - [x] Adapter les hooks/mixins RNG à NeoForge 1.21.1.
 - [x] Éviter toute désynchronisation du RNG client/serveur.
 
-[ ] 4. Porter /cenchant
-- Adapter CEnchantCommand au système de commandes client NeoForge.
-- Porter les arguments nécessaires.
-- Reproduire le comportement utile de la commande originale.
+[x] 4. Porter /cenchant
+- [x] Adapter CEnchantCommand au système de commandes client NeoForge.
+- [x] Porter les arguments nécessaires.
+- [x] Reproduire le comportement utile de la commande originale.
 
 [ ] 5. Porter l'intégration de la table d'enchantement
 - Récupérer les données de la table utilisée.
